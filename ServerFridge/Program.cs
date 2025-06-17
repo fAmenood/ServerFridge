@@ -1,4 +1,9 @@
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using ServerFridge.DataContext;
+using System.Runtime.CompilerServices;
+
 namespace ServerFridge
 {
     public class Program
@@ -6,13 +11,17 @@ namespace ServerFridge
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+ 
             // Add services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
+
 
             var app = builder.Build();
 
@@ -27,10 +36,21 @@ namespace ServerFridge
 
             app.UseAuthorization();
 
+            app.UseCors("CorcPolicy");
+
+          //  app.UseStaticFiles();
 
             app.MapControllers();
 
+        
+
+           
+
+
             app.Run();
+            
+       
+            
         }
     }
 }
