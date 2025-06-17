@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ServerFridge.Configuration;
 using ServerFridge.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -9,7 +10,13 @@ namespace ServerFridge.DataContext
     { 
        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-      
+      protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new FridgeModelConfiguration());
+            modelBuilder.ApplyConfiguration(new FridgeConfiguration());
+            modelBuilder.ApplyConfiguration(new FridgeProductsConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductsConfiguration());   
+        }
 
         public DbSet<Fridge> Fridges { get; set; }  
         public DbSet<FridgeModel> FridgeModels { get; set; }

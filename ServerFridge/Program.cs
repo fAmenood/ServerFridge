@@ -1,7 +1,10 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Identity.Client;
 using ServerFridge.DataContext;
+using ServerFridge.Models;
 using System.Runtime.CompilerServices;
 
 namespace ServerFridge
@@ -22,9 +25,11 @@ namespace ServerFridge
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 
+            
 
             var app = builder.Build();
 
+           
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -48,9 +53,13 @@ namespace ServerFridge
 
 
             app.Run();
+
+            
             
        
             
         }
+
+
     }
 }
