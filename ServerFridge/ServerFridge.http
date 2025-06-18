@@ -8,3 +8,4 @@ Accept: application/json
 ###
 GET {{ServerFridge_HostAddress}}/api/Fridge
 Accept: application/json
+

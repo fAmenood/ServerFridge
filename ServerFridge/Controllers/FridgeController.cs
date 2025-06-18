@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServerFridge.DataContext;
+using ServerFridge.Repository;
 
 namespace ServerFridge.Controllers
 {
@@ -9,25 +10,45 @@ namespace ServerFridge.Controllers
     [ApiController]
     public class FridgeController : ControllerBase
     {
-        private readonly AppDbContext appDbContext;
+        private readonly IFridgeRepository fridgeRepository;
 
 
-        public FridgeController(AppDbContext _appDbContext)
+        public FridgeController(IFridgeRepository _fridgeRepository)
         {
-            appDbContext = _appDbContext;
+            fridgeRepository = _fridgeRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllFridges()
         {
+            try
+            {
+                var fridges = await fridgeRepository.GetFridges();
+                return Ok(fridges);
+            }
 
-            return Ok(await appDbContext.Fridges.ToListAsync());
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
         [HttpGet("{id}/products")]
         public async Task<IActionResult> GetFridgeProducts(Guid id)
         {
-            var prods = await appDbContext.FridgeProducts.Where(fr=>fr.FridgeId==id).Include(fr=>fr.Products).ToListAsync();
-            return Ok(prods);
-        }
+            try
+            {
+                var fridge = await fridgeRepository.GetFridgeProducts(id);
 
+                if(fridge == null)
+                {
+                    return NotFound($"Fridge with id {id} not found");
+                }
+                return Ok(fridge);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,ex.Message); 
+            }
+        }
+        [HttpPost]
     }
 }

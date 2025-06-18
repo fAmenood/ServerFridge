@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Identity.Client;
 using ServerFridge.DataContext;
 using ServerFridge.Models;
+using ServerFridge.Repository;
 using System.Runtime.CompilerServices;
 
 namespace ServerFridge
@@ -14,8 +15,10 @@ namespace ServerFridge
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
- 
+
             // Add services to the container.
+
+       
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -25,7 +28,8 @@ namespace ServerFridge
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 
-            
+            builder.Services.AddScoped<IFridgeRepository, FridgeRepository>();
+
 
             var app = builder.Build();
 
@@ -47,7 +51,6 @@ namespace ServerFridge
 
             app.MapControllers();
 
-        
 
            
 

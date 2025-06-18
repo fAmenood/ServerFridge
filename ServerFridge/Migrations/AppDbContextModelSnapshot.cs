@@ -129,6 +129,29 @@ namespace ServerFridge.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("FridgeProducts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("30ed1b4b-b7f2-4fe5-9daa-608c8083ccff"),
+                            FridgeId = new Guid("2fcd1d29-5c3b-4089-b3d1-ec8524069741"),
+                            ProductId = new Guid("20fadc8c-7b02-4668-b652-073bcde750fc"),
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("ffa74149-1ab8-42cf-9015-b4ffb95b0762"),
+                            FridgeId = new Guid("6092b048-afaf-429c-a95a-07f57ca3a58f"),
+                            ProductId = new Guid("9b19425c-2503-48cb-b823-8a123b3a8ce3"),
+                            Quantity = 19
+                        },
+                        new
+                        {
+                            Id = new Guid("7a3192ae-1bcd-4a4a-85ed-c998acf2e2a7"),
+                            FridgeId = new Guid("2fcd1d29-5c3b-4089-b3d1-ec8524069741"),
+                            ProductId = new Guid("1605d6a2-5e70-44ed-9393-bccb8e46b910"),
+                            Quantity = 6
+                        });
                 });
 
             modelBuilder.Entity("ServerFridge.Models.Products", b =>
@@ -149,6 +172,26 @@ namespace ServerFridge.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("20fadc8c-7b02-4668-b652-073bcde750fc"),
+                            DefaultQuantity = 7,
+                            Name = "Apple"
+                        },
+                        new
+                        {
+                            Id = new Guid("1605d6a2-5e70-44ed-9393-bccb8e46b910"),
+                            DefaultQuantity = 5,
+                            Name = "Banana"
+                        },
+                        new
+                        {
+                            Id = new Guid("9b19425c-2503-48cb-b823-8a123b3a8ce3"),
+                            DefaultQuantity = 10,
+                            Name = "Sushi rolls"
+                        });
                 });
 
             modelBuilder.Entity("ServerFridge.Models.Fridge", b =>
