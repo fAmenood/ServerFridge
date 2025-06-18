@@ -19,7 +19,8 @@ namespace ServerFridge.Models
       
         [ForeignKey(nameof(FridgeModel))]
         public Guid ModelId { get; set; }
-        public FridgeModel FridgeModel { get; set; }    
+
+       public FridgeModel FridgeModel { get; set; }    
     
     }
 }

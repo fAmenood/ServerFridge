@@ -29,7 +29,7 @@ namespace ServerFridge
             options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 
             builder.Services.AddScoped<IFridgeRepository, FridgeRepository>();
-
+            builder.Services.AddScoped<IFridgeProductRepository, FridgeProductRepository>();
 
             var app = builder.Build();
 

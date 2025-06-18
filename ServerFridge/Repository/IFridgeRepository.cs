@@ -1,20 +1,20 @@
 ﻿using ServerFridge.Models;
-
+using ServerFridge.DTOModels;
 namespace ServerFridge.Repository
 {
     public interface IFridgeRepository
     {
-        Task<List<Fridge>> GetFridges();
+        Task<List<FridgeDTO>> GetFridges();
 
-        Task<Fridge> GetFridgeById(Guid id);
+        Task<FridgeDTO> GetFridgeById(Guid id);
 
-        Task<Fridge> AddFridge(Fridge fridge);
+        Task<FridgeDTO> AddFridge(FridgeDTO fridge);
 
-        Task<Fridge> UpdateFridge(Fridge fridge);
+        Task<FridgeDTO> UpdateFridge(Guid id, UpdateFridgeDTO fridge);
 
-        void DeleteFridgeById(Guid id);
+        Task DeleteFridgeById(Guid id);
 
-        Task<List<FridgeProducts>> GetFridgeProducts(Guid id);
+        Task<List<ProductsDTO>> GetFridgeProducts(Guid id);
 
 
 
