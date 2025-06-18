@@ -10,6 +10,13 @@ namespace ServerFridge.Repository
 
         Task<FridgeProductsDTO> AddProductToFridge(FridgeProductsDTO fridgeProductsDTO);
 
+        Task<FridgeProductsDTO> GetFridgeProductsById(Guid id);
+
+        Task<FridgeProductsDTO> UpdateFridgeProducts(Guid id, FridgeProductsDTO fridgeProductsDTO);
+
+        Task<bool> DeleteFridgeProducts(Guid id);
+
+        Task<int> ZeroQuantityFridgeProducts();
 
     }
 }

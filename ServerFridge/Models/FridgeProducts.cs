@@ -19,5 +19,9 @@ namespace ServerFridge.Models
 
         [Required]
         public int Quantity { get; set; }
+
+
+
+
     }
 }

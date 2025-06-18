@@ -6,7 +6,7 @@ using ServerFridge.Repository;
 
 namespace ServerFridge.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/fridgeProducts")]
     [ApiController]
     public class FridgeProductsController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace ServerFridge.Controllers
         {
             try
             {
-                var frProds= await _fridgeProductRep.GetFridgeProducts();
+                var frProds = await _fridgeProductRep.GetFridgeProducts();
                 return Ok(frProds);
             }
             catch (Exception ex)
@@ -29,5 +29,64 @@ namespace ServerFridge.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetFridgeProductsById(Guid id)
+        {
+            var frProd = await _fridgeProductRep.GetFridgeProductsById(id);
+            return frProd != null ? Ok(frProd) : NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddFridgeProducts(FridgeProductsDTO fridgeProductsDTO)
+        {
+       
+                if(!ModelState.IsValid)
+                {
+                    return BadRequest("Something not correct");
+                }
+              try
+            {
+                var frProds = await _fridgeProductRep.AddProductToFridge(fridgeProductsDTO);
+                return CreatedAtAction(nameof(GetFridgeProductsById), new { id = frProds.Id }, frProds);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFridgeProducts(Guid id, FridgeProductsDTO fridgeProductsDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var updateFrProds=await _fridgeProductRep.UpdateFridgeProducts(id,fridgeProductsDTO);
+            return updateFrProds !=null? Ok(updateFrProds) : NotFound();
+
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFridgeProducts(Guid id)
+        {
+            var del = await _fridgeProductRep.DeleteFridgeProducts(id);
+            return del ? NoContent() : NotFound();
+        }
+        [HttpPost("procedure")]
+        public async Task<IActionResult> ZeroQuantityFridgeProds()
+        {
+            try
+            {
+                var count = await _fridgeProductRep.ZeroQuantityFridgeProducts();
+                return Ok
+                (
+                    new { Message =$"Amount of products with zero quantity: {count} ",
+                    Counter = count
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

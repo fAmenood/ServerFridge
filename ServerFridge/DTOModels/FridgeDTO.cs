@@ -17,5 +17,8 @@ namespace ServerFridge.DTOModels
 
         public Guid ModelId { get; set; }
 
+
+    
+
     }
 }

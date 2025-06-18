@@ -51,7 +51,7 @@ namespace ServerFridge.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("{id}")]
+        [HttpGet("{Id}")]
         public async Task<IActionResult> GetFridge(Guid id)
         {
             try

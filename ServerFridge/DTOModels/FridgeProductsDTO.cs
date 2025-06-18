@@ -17,5 +17,6 @@ namespace ServerFridge.DTOModels
         public Guid FridgeId { get; set; }
 
         public int Quantity { get; set; }
+
     }
 }
