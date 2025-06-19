@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServerFridge.DataContext;
@@ -10,6 +11,7 @@ namespace ServerFridge.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+ 
     public class FridgeController : ControllerBase
     {
         private readonly IFridgeRepository fridgeRepository;
@@ -19,6 +21,7 @@ namespace ServerFridge.Controllers
         {
             fridgeRepository = _fridgeRepository;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllFridges()
         {
@@ -33,6 +36,8 @@ namespace ServerFridge.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+   
+        
         [HttpGet("{id}/products")]
         public async Task<IActionResult> GetFridgeProducts(Guid id)
         {
@@ -51,7 +56,9 @@ namespace ServerFridge.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpGet("{Id}")]
+        
+        [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetFridge(Guid id)
         {
             try

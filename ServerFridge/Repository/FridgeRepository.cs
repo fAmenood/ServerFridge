@@ -92,14 +92,14 @@ namespace ServerFridge.Repository
             fridge.Id = newFridge.Id;
             return fridge;
         }
-        public async Task<FridgeDTO> UpdateFridge(Guid id,UpdateFridgeDTO fridge)
+        public async Task<UpdateFridgeDTO> UpdateFridge(Guid id,UpdateFridgeDTO fridge)
         {
             var updateFridge = await _appDbContext.Fridges.FindAsync(id);
             if(updateFridge ==null)
             {
                 return null;
             }
-            if (fridge.Name != null)
+            if (fridge.Name!=null)
                 updateFridge.Name= fridge.Name;
 
 
@@ -108,21 +108,20 @@ namespace ServerFridge.Repository
             if(fridge.ModelId.HasValue)
             {
                 var modelId= await _appDbContext.FridgeModels
-                    .AnyAsync(x => x.Id == fridge.ModelId.Value);
+                    .AnyAsync(x => x.Id == fridge.ModelId);
 
                 if(modelId==null)
                 {
                     throw new ArgumentException("Model doesn't exist");
                 }
-                updateFridge.ModelId=fridge.ModelId.Value;
+                updateFridge.ModelId= (Guid)fridge.ModelId;
             }
 
             _appDbContext.Fridges.Update(updateFridge);
             await _appDbContext.SaveChangesAsync();
 
-            return new FridgeDTO
+            return new UpdateFridgeDTO
             { 
-                Id=updateFridge.Id,
                 Name=updateFridge.Name,
                 OwnerName=updateFridge.OwnerName,
                 ModelId =updateFridge.ModelId,

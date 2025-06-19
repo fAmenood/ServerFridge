@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ServerFridge.Configuration;
+
+using ServerFridge.Configurations;
 using ServerFridge.Models;
 using ServerFridge.Repository;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -27,6 +28,7 @@ namespace ServerFridge.DataContext
         public DbSet<FridgeModel> FridgeModels { get; set; }
         public DbSet<FridgeProducts> FridgeProducts { get; set; }
         public DbSet<Products> Products { get; set; }
+        public DbSet<User> Users {  get; set; }
 
 
   

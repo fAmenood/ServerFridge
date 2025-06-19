@@ -10,7 +10,7 @@ namespace ServerFridge.Repository
 
         Task<FridgeDTO> AddFridge(FridgeDTO fridge);
 
-        Task<FridgeDTO> UpdateFridge(Guid id, UpdateFridgeDTO fridge);
+        Task<UpdateFridgeDTO> UpdateFridge(Guid id, UpdateFridgeDTO fridge);
 
         Task DeleteFridgeById(Guid id);
 

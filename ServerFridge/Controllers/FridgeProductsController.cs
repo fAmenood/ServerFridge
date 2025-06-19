@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServerFridge.DTOModels;
 using ServerFridge.Models;
@@ -29,13 +30,16 @@ namespace ServerFridge.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+       
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetFridgeProductsById(Guid id)
         {
             var frProd = await _fridgeProductRep.GetFridgeProductsById(id);
             return frProd != null ? Ok(frProd) : NotFound();
         }
         [HttpPost]
+        
         public async Task<IActionResult> AddFridgeProducts(FridgeProductsDTO fridgeProductsDTO)
         {
        
@@ -44,7 +48,7 @@ namespace ServerFridge.Controllers
                     return BadRequest("Something not correct");
                 }
               try
-            {
+              {
                 var frProds = await _fridgeProductRep.AddProductToFridge(fridgeProductsDTO);
                 return CreatedAtAction(nameof(GetFridgeProductsById), new { id = frProds.Id }, frProds);
             }
@@ -55,11 +59,12 @@ namespace ServerFridge.Controllers
         
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFridgeProducts(Guid id, FridgeProductsDTO fridgeProductsDTO)
+        public async Task<IActionResult> UpdateFridgeProducts(Guid id, UpdateFridgeProductsDTO fridgeProductsDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
+            if (fridgeProductsDTO.Quantity == null && fridgeProductsDTO.ProductId == null && fridgeProductsDTO.FridgeId == null)
+                return BadRequest("At least one field must required for updating");
             var updateFrProds=await _fridgeProductRep.UpdateFridgeProducts(id,fridgeProductsDTO);
             return updateFrProds !=null? Ok(updateFrProds) : NotFound();
 

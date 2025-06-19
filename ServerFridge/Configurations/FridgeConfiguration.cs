@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ServerFridge.Models;
 
-namespace ServerFridge.Configuration
+namespace ServerFridge.Configurations
 {
     public class FridgeConfiguration: IEntityTypeConfiguration<Fridge>
     {

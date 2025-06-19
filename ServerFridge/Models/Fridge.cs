@@ -5,6 +5,7 @@ namespace ServerFridge.Models
 {
     public class Fridge
     {
+      
         [Key]
         [Column("Fridge Id")]
         public Guid Id { get; set; }

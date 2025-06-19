@@ -7,12 +7,14 @@ namespace ServerFridge.Models
     {
         [Key]
         [Column("FridgeProductId")]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
+        [Required]
         [ForeignKey(nameof(Products))]
         public Guid ProductId { get; set; }
         public Products Products { get; set; }
 
+        [Required]
         [ForeignKey(nameof(Fridge))]
         public Guid FridgeId { get; set; }  
         public Fridge Fridge { get; set; }

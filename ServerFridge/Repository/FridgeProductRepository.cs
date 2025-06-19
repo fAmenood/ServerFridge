@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using ServerFridge.DataContext;
 using ServerFridge.DTOModels;
 using ServerFridge.Models;
+using System;
 
 namespace ServerFridge.Repository
 {
+ 
     public class FridgeProductRepository : IFridgeProductRepository
     {
         public readonly AppDbContext _appDbContext;
@@ -90,15 +92,26 @@ namespace ServerFridge.Repository
 
             return fridgeProductsDTO;
         }
-        public async Task<FridgeProductsDTO> UpdateFridgeProducts(Guid id, FridgeProductsDTO fridgeProductsDTO)
+ 
+        public async Task<FridgeProductsDTO> UpdateFridgeProducts(Guid id, UpdateFridgeProductsDTO fridgeProductsDTO)
         {
             var frProds = await _appDbContext.FridgeProducts.FindAsync(id);
-            if (frProds==null)
-            {
+            if (frProds == null)
                 return null;
+
+            if(fridgeProductsDTO.Quantity.HasValue)
+            {
+                frProds.Quantity=fridgeProductsDTO.Quantity.Value;
             }
-            if(fridgeProductsDTO.Quantity>=0)
-                frProds.Quantity = fridgeProductsDTO.Quantity;
+            if(fridgeProductsDTO.ProductId.HasValue)
+            {
+                frProds.ProductId=fridgeProductsDTO.ProductId.Value;
+            }
+
+           if(fridgeProductsDTO.FridgeId.HasValue)
+            {
+                frProds.FridgeId=fridgeProductsDTO.FridgeId.Value;
+            }
 
             _appDbContext.FridgeProducts.Update(frProds);
 

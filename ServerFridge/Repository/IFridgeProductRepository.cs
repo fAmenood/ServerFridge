@@ -12,7 +12,7 @@ namespace ServerFridge.Repository
 
         Task<FridgeProductsDTO> GetFridgeProductsById(Guid id);
 
-        Task<FridgeProductsDTO> UpdateFridgeProducts(Guid id, FridgeProductsDTO fridgeProductsDTO);
+        Task<FridgeProductsDTO> UpdateFridgeProducts(Guid id, UpdateFridgeProductsDTO fridgeProductsDTO);
 
         Task<bool> DeleteFridgeProducts(Guid id);
 
