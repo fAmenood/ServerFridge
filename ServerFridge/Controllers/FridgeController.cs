@@ -9,7 +9,7 @@ using ServerFridge.Repository;
 
 namespace ServerFridge.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/fridges")]
     [ApiController]
  
     public class FridgeController : ControllerBase

@@ -5,9 +5,7 @@ namespace ServerFridge.DTOModels
 {
     public class ProductsDTO
     {
-
         public Guid Id { get; set; }
-
 
         public string Name { get; set; }
 

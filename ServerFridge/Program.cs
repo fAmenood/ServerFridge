@@ -83,6 +83,8 @@ namespace ServerFridge
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 
+
+
             builder.Services.AddScoped<IFridgeRepository, FridgeRepository>();
             builder.Services.AddScoped<IFridgeProductRepository, FridgeProductRepository>();
             builder.Services.AddScoped<IRegistrateRepository,RegistrateRepository>();
@@ -144,7 +146,7 @@ namespace ServerFridge
             });
             var app = builder.Build();
 
-           
+      
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
