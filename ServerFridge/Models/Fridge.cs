@@ -8,6 +8,7 @@ namespace ServerFridge.Models
       
         [Key]
         [Column("Fridge Id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Fridge name is a required field.")]

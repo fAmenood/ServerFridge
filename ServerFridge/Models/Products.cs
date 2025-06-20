@@ -13,6 +13,7 @@ namespace ServerFridge.Models
         [MaxLength(60, ErrorMessage = "Maximum length for the Name is 60 characters.")]
         public string Name { get; set; }
 
+        [Range(1, int.MaxValue, ErrorMessage = "Default quantity must be at least 1")]
         public int DefaultQuantity {  get; set; }   
 
 

@@ -8,7 +8,7 @@ namespace ServerFridge.Repository
 
         Task<FridgeDTO> GetFridgeById(Guid id);
 
-        Task<FridgeDTO> AddFridge(FridgeDTO fridge);
+        Task<FridgeDTO> AddFridge(FridgeCreateDTO fridge);
 
         Task<UpdateFridgeDTO> UpdateFridge(Guid id, UpdateFridgeDTO fridge);
 

@@ -37,6 +37,7 @@ namespace ServerFridge.Repository
                     Id=fp.Products.Id,
                     Name = fp.Products.Name,
                     DefaultQuantity=fp.Products.DefaultQuantity,
+                  
                     
                 }).ToListAsync();
         }
@@ -72,25 +73,26 @@ namespace ServerFridge.Repository
             };
         }
 
-        public async Task<FridgeDTO> AddFridge(FridgeDTO fridge)
+        public async Task<FridgeDTO> AddFridge(FridgeCreateDTO fridgeCreate)
         {
-            var newFridge = new Fridge
+            var fridge = new Fridge
             {
+                Id = Guid.NewGuid(),
+                Name = fridgeCreate.Name,
+                OwnerName = fridgeCreate.OwnerName,
+                ModelId = fridgeCreate.ModelId
+            };
+
+            await _appDbContext.Fridges.AddAsync(fridge);
+            await _appDbContext.SaveChangesAsync();
+
+            return new FridgeDTO
+            {
+                Id = fridge.Id,
                 Name = fridge.Name,
                 OwnerName = fridge.OwnerName,
-                ModelId = fridge.ModelId,
+                ModelId = fridge.ModelId
             };
-            //var fridgeModel = await _appDbContext.FridgeModels.AnyAsync(m=>m.Id==fridge.ModelId);
-
-            //if(!fridgeModel)
-            //{
-            //    throw new ArgumentException("Fridge model doesn't exist");
-            //}
-
-            await _appDbContext.Fridges.AddAsync(newFridge);
-            await _appDbContext.SaveChangesAsync();
-            fridge.Id = newFridge.Id;
-            return fridge;
         }
         public async Task<UpdateFridgeDTO> UpdateFridge(Guid id,UpdateFridgeDTO fridge)
         {

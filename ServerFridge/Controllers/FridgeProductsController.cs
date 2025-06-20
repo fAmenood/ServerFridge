@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ServerFridge.DTOModels;
 using ServerFridge.Models;
@@ -32,7 +33,7 @@ namespace ServerFridge.Controllers
         }
        
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+   
         public async Task<IActionResult> GetFridgeProductsById(Guid id)
         {
             var frProd = await _fridgeProductRep.GetFridgeProductsById(id);
@@ -40,23 +41,21 @@ namespace ServerFridge.Controllers
         }
         [HttpPost]
         
-        public async Task<IActionResult> AddFridgeProducts(FridgeProductsDTO fridgeProductsDTO)
+        public async Task<IActionResult> AddFridgeProducts(FridgeProductCreateDTO fridgeProductsDTO)
         {
-       
-                if(!ModelState.IsValid)
-                {
-                    return BadRequest("Something not correct");
-                }
-              try
-              {
-                var frProds = await _fridgeProductRep.AddProductToFridge(fridgeProductsDTO);
-                return CreatedAtAction(nameof(GetFridgeProductsById), new { id = frProds.Id }, frProds);
+
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+
+                var newFridgeProduct = await _fridgeProductRep.AddProductToFridge(fridgeProductsDTO);
+                return CreatedAtAction(nameof(GetFridgeProductsById), new { id = newFridgeProduct.Id }, newFridgeProduct);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-        
+
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFridgeProducts(Guid id, UpdateFridgeProductsDTO fridgeProductsDTO)

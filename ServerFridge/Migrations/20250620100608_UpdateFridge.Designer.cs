@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServerFridge.DataContext;
 
@@ -11,9 +12,11 @@ using ServerFridge.DataContext;
 namespace ServerFridge.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620100608_UpdateFridge")]
+    partial class UpdateFridge
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,13 +28,11 @@ namespace ServerFridge.Migrations
             modelBuilder.Entity("ServerFridge.Models.Fridge", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Fridge Id");
 
                     b.Property<Guid>("ModelId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Model Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -47,26 +48,26 @@ namespace ServerFridge.Migrations
 
                     b.HasIndex("ModelId");
 
-                    b.ToTable("Fridges", (string)null);
+                    b.ToTable("Fridges");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a1b2c3d4-1234-5678-9012-abcdef123456"),
+                            Id = new Guid("2fcd1d29-5c3b-4089-b3d1-ec8524069741"),
                             ModelId = new Guid("3b93b477-08a5-4e4d-8fb7-637c47adbea1"),
                             Name = "Appolon",
                             OwnerName = "Ivan Ivanov"
                         },
                         new
                         {
-                            Id = new Guid("b2c3d4e5-2345-6789-0123-bcdef1234567"),
+                            Id = new Guid("6092b048-afaf-429c-a95a-07f57ca3a58f"),
                             ModelId = new Guid("aaaea151-8e40-4276-8a6a-1c275b120c1f"),
                             Name = "Oxygen 3.0",
                             OwnerName = "Alex Alexdrov"
                         },
                         new
                         {
-                            Id = new Guid("d4e5f6f7-4567-8901-2345-def123456789"),
+                            Id = new Guid("2f46b686-1436-46db-a85c-9863bcadd7ea"),
                             ModelId = new Guid("3b93b477-08a5-4e4d-8fb7-637c47adbea1"),
                             Name = "Nevermore",
                             OwnerName = "Nikolai Nikolaev"

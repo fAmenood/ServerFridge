@@ -7,7 +7,7 @@ namespace ServerFridge.Models
     {
         [Key]
         [Column("FridgeProductId")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
 
         [Required]
         [ForeignKey(nameof(Products))]

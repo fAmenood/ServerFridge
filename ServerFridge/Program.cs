@@ -88,6 +88,8 @@ namespace ServerFridge
             builder.Services.AddScoped<IFridgeRepository, FridgeRepository>();
             builder.Services.AddScoped<IFridgeProductRepository, FridgeProductRepository>();
             builder.Services.AddScoped<IRegistrateRepository,RegistrateRepository>();
+            builder.Services.AddScoped<IProductRepository,ProductsRepository>();
+            builder.Services.AddScoped<IModelsRepository,ModelsRepository>();
 
             builder.Services.AddAuthentication(options=> {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -109,32 +111,32 @@ namespace ServerFridge
                         ValidAlgorithms = new[] { "HS256" },
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                     };
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnAuthenticationFailed = context =>
-                        {
-                            Console.WriteLine($"Authentication failed: {context.Exception}");
-                            if (context.Exception is SecurityTokenExpiredException)
-                            {
-                                Console.WriteLine("Token expired");
-                            }
-                            else if (context.Exception is SecurityTokenInvalidSignatureException)
-                            {
-                                Console.WriteLine("Invalid signature");
-                            }
-                            return Task.CompletedTask;
-                        },
-                        OnTokenValidated = context =>
-                        {
-                            Console.WriteLine("Token validated successfully");
-                            return Task.CompletedTask;
-                        },
-                        OnChallenge = context =>
-                        {
-                            Console.WriteLine($"Challenge: {context.Error}, {context.ErrorDescription}");
-                            return Task.CompletedTask;
-                        }
-                    };
+                    //options.Events = new JwtBearerEvents
+                    //{
+                    //    OnAuthenticationFailed = context =>
+                    //    {
+                    //        Console.WriteLine($"Authentication failed: {context.Exception}");
+                    //        if (context.Exception is SecurityTokenExpiredException)
+                    //        {
+                    //            Console.WriteLine("Token expired");
+                    //        }
+                    //        else if (context.Exception is SecurityTokenInvalidSignatureException)
+                    //        {
+                    //            Console.WriteLine("Invalid signature");
+                    //        }
+                    //        return Task.CompletedTask;
+                    //    },
+                    //    OnTokenValidated = context =>
+                    //    {
+                    //        Console.WriteLine("Token validated successfully");
+                    //        return Task.CompletedTask;
+                    //    },
+                    //    OnChallenge = context =>
+                    //    {
+                    //        Console.WriteLine($"Challenge: {context.Error}, {context.ErrorDescription}");
+                    //        return Task.CompletedTask;
+                    //    }
+                    //};
 
                 });
 
@@ -168,8 +170,7 @@ namespace ServerFridge
             app.MapControllers();
 
 
-            Console.WriteLine($"Server UTC Time: {DateTime.UtcNow.ToString("o")}");
-            Console.WriteLine($"Server Local Time: {DateTime.Now.ToString("o")}");
+
 
             app.Run();
 

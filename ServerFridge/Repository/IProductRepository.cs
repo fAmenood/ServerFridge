@@ -8,8 +8,10 @@ namespace ServerFridge.Repository
 
         Task<ProductsDTO> GetProductById(Guid id);
 
-        Task<ProductsDTO> AddProduct(FridgeDTO fridge);
+        Task<ProductsDTO> AddProduct(ProductCreateDTO fridge);
 
-        Task<ProductsDTO> UpdateProduct(Guid id, UpdateFridgeDTO fridge);
+        Task<UpdateProductsDTO> UpdateProduct(Guid id, UpdateProductsDTO fridge);
+
+        Task DeleteProduct(Guid id);   
     }
 }

@@ -49,81 +49,117 @@ namespace ServerFridge.Repository
 
             
         }
-        public async Task<FridgeProductsDTO> AddProductToFridge(FridgeProductsDTO fridgeProductsDTO)
+        public async Task<FridgeProductsDTO> AddProductToFridge(FridgeProductCreateDTO fridgeProductsDTO)
         {
-            var fridge = await _appDbContext.Fridges
-                .AnyAsync(f => f.Id == fridgeProductsDTO.FridgeId);
+                var fridgeExists = await _appDbContext.Fridges
+              .AnyAsync(f => f.Id == fridgeProductsDTO.FridgeId);
 
-            if(!fridge)
+            if (!fridgeExists)
             {
                 throw new ArgumentException($"Fridge with id {fridgeProductsDTO.FridgeId} doesn't exist");
-
             }
-            var products = await _appDbContext.Products
-                .AnyAsync(pr=>pr.Id== fridgeProductsDTO.ProductId); ;
-            if(!products)
+            var productExists = await _appDbContext.Products
+                .AnyAsync(p => p.Id == fridgeProductsDTO.ProductId);
+
+            if (!productExists)
             {
                 throw new ArgumentException($"Product with id {fridgeProductsDTO.ProductId} doesn't exist");
             }
-            var relation = await _appDbContext.FridgeProducts
-                .FirstOrDefaultAsync
-                (fp => fp.FridgeId == fridgeProductsDTO.FridgeId &&
-                 fp.ProductId == fridgeProductsDTO.ProductId);
-            if (relation != null)
+
+            // Проверяем, не существует ли уже такой связи
+            var existingRelation = await _appDbContext.FridgeProducts
+                .FirstOrDefaultAsync(fp =>
+                    fp.FridgeId == fridgeProductsDTO.FridgeId &&
+                    fp.ProductId == fridgeProductsDTO.ProductId);
+
+            if (existingRelation != null)
             {
-                relation.Quantity += fridgeProductsDTO.Quantity;
-            }
-            else
-            {
-                var fridProds = new FridgeProducts
+                // Если связь уже существует - обновляем количество
+                existingRelation.Quantity += fridgeProductsDTO.Quantity;
+                await _appDbContext.SaveChangesAsync();
+
+                return new FridgeProductsDTO
                 {
-                    FridgeId = fridgeProductsDTO.FridgeId,
-                    ProductId = fridgeProductsDTO.ProductId,
-                    Quantity = fridgeProductsDTO.Quantity,
-
-
+                    Id = existingRelation.Id,
+                    FridgeId = existingRelation.FridgeId,
+                    ProductId = existingRelation.ProductId,
+                    Quantity = existingRelation.Quantity
                 };
-                await _appDbContext.FridgeProducts.AddAsync(fridProds);
             }
-            
-            await _appDbContext.SaveChangesAsync(); 
 
-            
+            // Создаем новую связь
+            var newFridgeProduct = new FridgeProducts
+            {
+                Id = Guid.NewGuid(),
+                FridgeId = fridgeProductsDTO.FridgeId,
+                ProductId = fridgeProductsDTO.ProductId,
+                Quantity = fridgeProductsDTO.Quantity
+            };
 
-            return fridgeProductsDTO;
+            await _appDbContext.FridgeProducts.AddAsync(newFridgeProduct);
+            await _appDbContext.SaveChangesAsync();
+
+            // Возвращаем созданный объект с ID
+            return new FridgeProductsDTO
+            {
+                Id = newFridgeProduct.Id,
+                FridgeId = newFridgeProduct.FridgeId,
+                ProductId = newFridgeProduct.ProductId,
+                Quantity = newFridgeProduct.Quantity
+            };
         }
  
-        public async Task<FridgeProductsDTO> UpdateFridgeProducts(Guid id, UpdateFridgeProductsDTO fridgeProductsDTO)
+        public async Task<FridgeProductsDTO> UpdateFridgeProducts(Guid id, UpdateFridgeProductsDTO updateDto)
         {
-            var frProds = await _appDbContext.FridgeProducts.FindAsync(id);
-            if (frProds == null)
+            var fridgeProduct = await _appDbContext.FridgeProducts.FindAsync(id);
+            if (fridgeProduct == null)
+            {
                 return null;
-
-            if(fridgeProductsDTO.Quantity.HasValue)
-            {
-                frProds.Quantity=fridgeProductsDTO.Quantity.Value;
-            }
-            if(fridgeProductsDTO.ProductId.HasValue)
-            {
-                frProds.ProductId=fridgeProductsDTO.ProductId.Value;
             }
 
-           if(fridgeProductsDTO.FridgeId.HasValue)
+            // Проверка на дубликат при изменении связей
+            if (updateDto.FridgeId.HasValue || updateDto.ProductId.HasValue)
             {
-                frProds.FridgeId=fridgeProductsDTO.FridgeId.Value;
+                var newFridgeId = updateDto.FridgeId ?? fridgeProduct.FridgeId;
+                var newProductId = updateDto.ProductId ?? fridgeProduct.ProductId;
+
+                var duplicateExists = await _appDbContext.FridgeProducts
+                    .AnyAsync(fp =>
+                        fp.Id != id &&
+                        fp.FridgeId == newFridgeId &&
+                        fp.ProductId == newProductId);
+
+                if (duplicateExists)
+                {
+                    throw new ArgumentException("This product already exists in the specified fridge");
+                }
             }
 
-            _appDbContext.FridgeProducts.Update(frProds);
+            // Обновляем поля
+            if (updateDto.Quantity.HasValue)
+            {
+                fridgeProduct.Quantity = updateDto.Quantity.Value;
+            }
 
+            if (updateDto.ProductId.HasValue)
+            {
+                fridgeProduct.ProductId = updateDto.ProductId.Value;
+            }
+
+            if (updateDto.FridgeId.HasValue)
+            {
+                fridgeProduct.FridgeId = updateDto.FridgeId.Value;
+            }
+
+            _appDbContext.FridgeProducts.Update(fridgeProduct);
             await _appDbContext.SaveChangesAsync();
 
             return new FridgeProductsDTO
             {
-                Id=frProds.Id,
-                FridgeId=frProds.FridgeId,
-                ProductId=frProds.ProductId,
-                Quantity=frProds.Quantity,
-                
+                Id = fridgeProduct.Id,
+                FridgeId = fridgeProduct.FridgeId,
+                ProductId = fridgeProduct.ProductId,
+                Quantity = fridgeProduct.Quantity
             };
         }
         public async Task<bool> DeleteFridgeProducts(Guid id)

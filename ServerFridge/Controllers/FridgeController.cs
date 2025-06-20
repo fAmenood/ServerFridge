@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServerFridge.DataContext;
@@ -58,19 +59,13 @@ namespace ServerFridge.Controllers
         }
         
         [HttpGet("{id}")]
-        [Authorize]
+  
         public async Task<IActionResult> GetFridge(Guid id)
         {
             try
             {
                 var fridge = await fridgeRepository.GetFridgeById(id);
-
-                if (fridge == null)
-                {
-                    return NotFound($"Fridge with {id} is not found");
-                }
-
-                return Ok(fridge);
+                return fridge != null ? Ok(fridge) : NotFound();
             }
             catch (Exception ex)
             {
@@ -79,16 +74,13 @@ namespace ServerFridge.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> AddNewFridge(FridgeDTO fridge)
+        public async Task<IActionResult> AddNewFridge(FridgeCreateDTO fridge)
         {
             try
             {
-                if (fridge == null || !ModelState.IsValid)
-                {
-                    return BadRequest("Fridge doesn't exist or invalid model");
-                }
-                var newFridge = await fridgeRepository.AddFridge(fridge);
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
+                var newFridge = await fridgeRepository.AddFridge(fridge);
                 return CreatedAtAction(nameof(GetFridge), new { id = newFridge.Id }, newFridge);
             }
             catch (Exception ex)
@@ -99,18 +91,16 @@ namespace ServerFridge.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFridge(Guid id, UpdateFridgeDTO fridge)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try
             {
-                var updatedFridge = await fridgeRepository.UpdateFridge(id, fridge);
-                if (updatedFridge == null) return NotFound();
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                return Ok(updatedFridge);
+                var updatedFridge = await fridgeRepository.UpdateFridge(id, fridge);
+                return updatedFridge != null ? Ok(updatedFridge) : NotFound();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
         [HttpDelete("{id}")]

@@ -7,7 +7,7 @@ namespace ServerFridge.DTOModels
     public class FridgeProductsDTO
     {
      
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
 
         public Guid ProductId { get; set; }

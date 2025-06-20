@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using ServerFridge.DataContext;
 using ServerFridge.DTOModels;
+using ServerFridge.Models;
 
 namespace ServerFridge.Repository
 {
@@ -12,9 +14,24 @@ namespace ServerFridge.Repository
             _appDbContext = appDbContext;
     }
 
-        public async Task<ProductsDTO> AddProduct(ProductsDTO product)
+        public async Task<ProductsDTO> AddProduct(ProductCreateDTO productCreate)
         {
-           var newProduct
+            var product = new Products
+            {
+                Id = Guid.NewGuid(),
+                Name = productCreate.Name,
+                DefaultQuantity = productCreate.DefaultQuantity
+            };
+
+            await _appDbContext.Products.AddAsync(product);
+            await _appDbContext.SaveChangesAsync();
+
+            return new ProductsDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+                DefaultQuantity = product.DefaultQuantity
+            };
         }
 
         public async Task<ProductsDTO> GetProductById(Guid id)
@@ -45,9 +62,40 @@ namespace ServerFridge.Repository
             }).ToListAsync();
         }
 
-        Task<ProductsDTO> IProductRepository.UpdateProduct(Guid id, UpdateFridgeDTO fridge)
+        public async Task<UpdateProductsDTO> UpdateProduct(Guid id, UpdateProductsDTO product)
         {
-            throw new NotImplementedException();
+            var updateProduct = await _appDbContext.Products.FindAsync(id);
+            if (updateProduct == null)
+            {
+                return null;
+            }
+            if (product.Name != null)
+            {
+                updateProduct.Name = product.Name;
+            }
+            if(product.DefaultQuantity>0)
+            {
+                updateProduct.DefaultQuantity = product.DefaultQuantity;
+            }
+            _appDbContext.Products.Update(updateProduct);
+            await _appDbContext.SaveChangesAsync();
+
+            return new UpdateProductsDTO
+            {
+
+                Name = updateProduct.Name,
+                DefaultQuantity = updateProduct.DefaultQuantity,
+
+            };
+        }
+        public async Task DeleteProduct(Guid id)
+        {
+            var product = await _appDbContext.Products.FindAsync(id);
+            if (product != null)
+            {
+                _appDbContext.Products.Remove(product);
+                await _appDbContext.SaveChangesAsync();
+            }
         }
     }
 }

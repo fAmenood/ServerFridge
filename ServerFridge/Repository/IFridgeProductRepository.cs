@@ -8,7 +8,7 @@ namespace ServerFridge.Repository
     {
         Task<List<FridgeProductsDTO>> GetFridgeProducts();
 
-        Task<FridgeProductsDTO> AddProductToFridge(FridgeProductsDTO fridgeProductsDTO);
+        Task<FridgeProductsDTO> AddProductToFridge(FridgeProductCreateDTO fridgeProductsDTO);
 
         Task<FridgeProductsDTO> GetFridgeProductsById(Guid id);
 
