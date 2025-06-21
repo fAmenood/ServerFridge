@@ -11,5 +11,7 @@ namespace ServerFridge.DTOModels
 
         [Range(1, int.MaxValue, ErrorMessage = "Default quantity must be non-negative")]
         public int DefaultQuantity { get; set; }
+
+        public string? ImagePath {get; set; }   
     }
 }
