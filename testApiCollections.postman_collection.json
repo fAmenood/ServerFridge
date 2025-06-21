@@ -1,0 +1,107 @@
+{
+	"info": {
+		"_postman_id": "7bfc0a5c-d26c-46aa-877a-465a990856be",
+		"name": "testApiCollections",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46013984"
+	},
+	"item": [
+		{
+			"name": "Get all fridges",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Post fridge",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Inovallo\",\n    \"ownerName\":\"Igor Kvallo\",\n    \"modelId\": \"3b93b477-08a5-4e4d-8fb7-637c47adbea1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7066/api/fridges",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7066",
+					"path": [
+						"api",
+						"fridges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put fridge",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Inovallo\",\n    \"ownerName\":\"Igor Kvallo\",\n    \"modelId\": \"3b93b477-08a5-4e4d-8fb7-637c47adbea1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7066/api/fridges/01e11bb6-2ae2-4160-8fbe-38106a42509a",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7066",
+					"path": [
+						"api",
+						"fridges",
+						"01e11bb6-2ae2-4160-8fbe-38106a42509a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete fridge",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Inovallo\",\n    \"ownerName\":\"Igor Kvallo\",\n    \"modelId\": \"3b93b477-08a5-4e4d-8fb7-637c47adbea1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7066/api/fridges/01e11bb6-2ae2-4160-8fbe-38106a42509a",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7066",
+					"path": [
+						"api",
+						"fridges",
+						"01e11bb6-2ae2-4160-8fbe-38106a42509a"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
