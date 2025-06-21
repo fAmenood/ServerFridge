@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServerFridge.DataContext;
 
@@ -11,9 +12,11 @@ using ServerFridge.DataContext;
 namespace ServerFridge.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250621061228_FilePathInDB")]
+    partial class FilePathInDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,7 +93,7 @@ namespace ServerFridge.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FridgeModels", (string)null);
+                    b.ToTable("FridgeModels");
 
                     b.HasData(
                         new
@@ -129,7 +132,7 @@ namespace ServerFridge.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("FridgeProducts", (string)null);
+                    b.ToTable("FridgeProducts");
 
                     b.HasData(
                         new
@@ -176,29 +179,26 @@ namespace ServerFridge.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("20fadc8c-7b02-4668-b652-073bcde750fc"),
                             DefaultQuantity = 7,
-                            Name = "Apple",
-                            ImagePath=""
+                            Name = "Apple"
                         },
                         new
                         {
                             Id = new Guid("1605d6a2-5e70-44ed-9393-bccb8e46b910"),
                             DefaultQuantity = 5,
-                            Name = "Banana",
-                            ImagePath = ""
+                            Name = "Banana"
                         },
                         new
                         {
                             Id = new Guid("9b19425c-2503-48cb-b823-8a123b3a8ce3"),
                             DefaultQuantity = 10,
-                            Name = "Sushi rolls",
-                            ImagePath = ""
+                            Name = "Sushi rolls"
                         });
                 });
 
@@ -225,7 +225,7 @@ namespace ServerFridge.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ServerFridge.Models.Fridge", b =>

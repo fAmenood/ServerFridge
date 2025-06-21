@@ -14,7 +14,11 @@ namespace ServerFridge.Models
         public string Name { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Default quantity must be at least 1")]
-        public int DefaultQuantity {  get; set; }   
+        public int DefaultQuantity {  get; set; }
+
+
+        [Column("Image Path")]
+        public string? ImagePath { get; set; }
 
 
     }

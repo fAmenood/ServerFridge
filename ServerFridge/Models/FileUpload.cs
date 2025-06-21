@@ -5,6 +5,6 @@
         public IFormFile files { get; set; }
 
 
-        public Guid ProductId { get; set; } // Для привязки к продукту
+        public Guid ProductId { get; set; } 
     }
 }
