@@ -58,7 +58,7 @@ namespace ServerFridge.Controllers
                 return NotFound();
 
             var fileStream = System.IO.File.OpenRead(filePath);
-            return File(fileStream, "image/png"); // Автоматически закроет поток
+            return File(fileStream, "image/png");
         }
     }
 }

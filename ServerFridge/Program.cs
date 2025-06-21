@@ -91,61 +91,62 @@ namespace ServerFridge
             builder.Services.AddScoped<IProductRepository,ProductsRepository>();
             builder.Services.AddScoped<IModelsRepository,ModelsRepository>();
 
-            builder.Services.AddAuthentication(options=> {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })  
-                .AddJwtBearer(options=>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidateLifetime = false,
-                        ValidIssuer = issuer,
-                        ValidAudience = audience,
-                        ClockSkew = TimeSpan.Zero,
-                        NameClaimType = JwtRegisteredClaimNames.Email,
-                        RoleClaimType = ClaimTypes.Role,
-                        ValidAlgorithms = new[] { "HS256" },
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-                    };
-                    //options.Events = new JwtBearerEvents
-                    //{
-                    //    OnAuthenticationFailed = context =>
-                    //    {
-                    //        Console.WriteLine($"Authentication failed: {context.Exception}");
-                    //        if (context.Exception is SecurityTokenExpiredException)
-                    //        {
-                    //            Console.WriteLine("Token expired");
-                    //        }
-                    //        else if (context.Exception is SecurityTokenInvalidSignatureException)
-                    //        {
-                    //            Console.WriteLine("Invalid signature");
-                    //        }
-                    //        return Task.CompletedTask;
-                    //    },
-                    //    OnTokenValidated = context =>
-                    //    {
-                    //        Console.WriteLine("Token validated successfully");
-                    //        return Task.CompletedTask;
-                    //    },
-                    //    OnChallenge = context =>
-                    //    {
-                    //        Console.WriteLine($"Challenge: {context.Error}, {context.ErrorDescription}");
-                    //        return Task.CompletedTask;
-                    //    }
-                    //};
+            //builder.Services.AddAuthentication(options=> {
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    })  
+            //    .AddJwtBearer(options=>
+            //    {
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateIssuer = true,
+            //            ValidateAudience = true,
+            //            ValidateIssuerSigningKey = true,
+            //            ValidateLifetime = false,
+            //            ValidIssuer = issuer,
+            //            ValidAudience = audience,
+            //            ClockSkew = TimeSpan.Zero,
+            //            NameClaimType = JwtRegisteredClaimNames.Email,
+            //            RoleClaimType = ClaimTypes.Role,
+            //            ValidAlgorithms = new[] { "HS256" },
+            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            //        };
+            //options.Events = new JwtBearerEvents
+            //{
+            //    OnAuthenticationFailed = context =>
+            //    {
+            //        Console.WriteLine($"Authentication failed: {context.Exception}");
+            //        if (context.Exception is SecurityTokenExpiredException)
+            //        {
+            //            Console.WriteLine("Token expired");
+            //        }
+            //        else if (context.Exception is SecurityTokenInvalidSignatureException)
+            //        {
+            //            Console.WriteLine("Invalid signature");
+            //        }
+            //        return Task.CompletedTask;
+            //    },
+            //    OnTokenValidated = context =>
+            //    {
+            //        Console.WriteLine("Token validated successfully");
+            //        return Task.CompletedTask;
+            //    },
+            //    OnChallenge = context =>
+            //    {
+            //        Console.WriteLine($"Challenge: {context.Error}, {context.ErrorDescription}");
+            //        return Task.CompletedTask;
+            //    }
+            //};
 
-                });
-
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
-                options.AddPolicy("AllUsers", policy => policy.RequireRole("Admin", "User"));
-            });
+            //});
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
+            //builder.Services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            //    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+            //    options.AddPolicy("AllUsers", policy => policy.RequireRole("Admin", "User"));
+            //});
             var app = builder.Build();
 
       

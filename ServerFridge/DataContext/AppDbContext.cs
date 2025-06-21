@@ -31,12 +31,7 @@ namespace ServerFridge.DataContext
         public DbSet<User> Users {  get; set; }
 
 
-  
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
-        //{
-        //    optionBuilder.UseSqlServer(@"Data Source=YARIK-BOOK; Initial Catalog=FridgeSystem;Trusted_Connection= true");
-        //}
 
 
     }
