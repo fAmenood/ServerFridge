@@ -3,4 +3,17 @@
 GET {{ServerFridge_HostAddress}}/weatherforecast/
 Accept: application/json
 
+
+
 ###
+GET {{ServerFridge_HostAddress}}/api/Fridge
+Accept: application/json
+
+
+
+# ###
+# PUT {{ServerFridge_HostAddress}}/api/Fridge/id
+# Accept: application/json
+# ###
+# GET {{ServerFridge_HostAddress}}/api/Fridge/id
+# Accept: application/json
