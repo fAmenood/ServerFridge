@@ -32,52 +32,49 @@ namespace ServerFridge
             var audience = jwtToken["Audience"];
             var secretKey = jwtToken["SecretKey"];
 
-            Console.WriteLine($"JWT Configuration:");
-            Console.WriteLine($"Issuer: {issuer}");
-            Console.WriteLine($"Audience: {audience}");
-            Console.WriteLine($"SecretKey: {new string('*', secretKey.Length)} (Length: {secretKey.Length})");
 
-            // Add services to the container.
-            if (string.IsNullOrEmpty(secretKey))
+
+
+
+
+            builder.Services.AddCors(options =>
             {
-                throw new ArgumentException("JWT Secret Key is invalid");
-            }
-            if(secretKey.Length<32)
-            {
-                throw new ArgumentException("JWT Secret Key is shorter than needed");
-            }
-            
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
+ 
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fridge API", Version = "v1" });
 
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                var securityScheme = new OpenApiSecurityScheme
                 {
-                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                    Name = "Authorization",
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
                     }
-                });
-               
+                };
+
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+                    { securityScheme, Array.Empty<string>() }});
             });
 
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -91,62 +88,48 @@ namespace ServerFridge
             builder.Services.AddScoped<IProductRepository,ProductsRepository>();
             builder.Services.AddScoped<IModelsRepository,ModelsRepository>();
 
-            //builder.Services.AddAuthentication(options=> {
-            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    })  
-            //    .AddJwtBearer(options=>
-            //    {
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuer = true,
-            //            ValidateAudience = true,
-            //            ValidateIssuerSigningKey = true,
-            //            ValidateLifetime = false,
-            //            ValidIssuer = issuer,
-            //            ValidAudience = audience,
-            //            ClockSkew = TimeSpan.Zero,
-            //            NameClaimType = JwtRegisteredClaimNames.Email,
-            //            RoleClaimType = ClaimTypes.Role,
-            //            ValidAlgorithms = new[] { "HS256" },
-            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-            //        };
-            //options.Events = new JwtBearerEvents
-            //{
-            //    OnAuthenticationFailed = context =>
-            //    {
-            //        Console.WriteLine($"Authentication failed: {context.Exception}");
-            //        if (context.Exception is SecurityTokenExpiredException)
-            //        {
-            //            Console.WriteLine("Token expired");
-            //        }
-            //        else if (context.Exception is SecurityTokenInvalidSignatureException)
-            //        {
-            //            Console.WriteLine("Invalid signature");
-            //        }
-            //        return Task.CompletedTask;
-            //    },
-            //    OnTokenValidated = context =>
-            //    {
-            //        Console.WriteLine("Token validated successfully");
-            //        return Task.CompletedTask;
-            //    },
-            //    OnChallenge = context =>
-            //    {
-            //        Console.WriteLine($"Challenge: {context.Error}, {context.ErrorDescription}");
-            //        return Task.CompletedTask;
-            //    }
-            //};
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = issuer,
+                        ValidAudience = audience,
+                        ClockSkew = TimeSpan.FromMinutes(1), 
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                    };
 
-            //});
+           
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
             builder.Services.AddAuthentication();
             builder.Services.AddAuthorization();
-            //builder.Services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-            //    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
-            //    options.AddPolicy("AllUsers", policy => policy.RequireRole("Admin", "User"));
-            //});
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+                options.AddPolicy("AllUsers", policy => policy.RequireRole("Admin", "User"));
+            });
             var app = builder.Build();
 
       
@@ -159,28 +142,21 @@ namespace ServerFridge
 
             app.UseHttpsRedirection();
 
-        
+
+
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
-       
 
           //  app.UseStaticFiles();
 
             app.MapControllers();
 
-
-
-
             app.Run();
-
-            
-            
-       
-            
+  
         }
-
-
     }
 }

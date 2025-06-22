@@ -20,6 +20,7 @@ namespace ServerFridge.Controllers
         }
 
         [HttpGet]
+
         public async Task<IActionResult> GetAllProducts()
         {
             try
@@ -63,7 +64,7 @@ namespace ServerFridge.Controllers
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                product.ImagePath = null;
+ 
                 var newProduct = await productRepository.AddProduct(product);
                 return CreatedAtAction(nameof(GetProduct), new { id = newProduct.Id }, newProduct);
             }

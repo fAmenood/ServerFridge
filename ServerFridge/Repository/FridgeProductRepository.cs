@@ -43,10 +43,6 @@ namespace ServerFridge.Repository
                 ProductId = fridgeProd.ProductId,
                 Quantity = fridgeProd.Quantity
             };
-                
-
-
-
             
         }
         public async Task<FridgeProductsDTO> AddProductToFridge(FridgeProductCreateDTO fridgeProductsDTO)
@@ -66,7 +62,7 @@ namespace ServerFridge.Repository
                 throw new ArgumentException($"Product with id {fridgeProductsDTO.ProductId} doesn't exist");
             }
 
-            // Проверяем, не существует ли уже такой связи
+
             var existingRelation = await _appDbContext.FridgeProducts
                 .FirstOrDefaultAsync(fp =>
                     fp.FridgeId == fridgeProductsDTO.FridgeId &&
@@ -74,7 +70,7 @@ namespace ServerFridge.Repository
 
             if (existingRelation != null)
             {
-                // Если связь уже существует - обновляем количество
+
                 existingRelation.Quantity += fridgeProductsDTO.Quantity;
                 await _appDbContext.SaveChangesAsync();
 
@@ -87,7 +83,6 @@ namespace ServerFridge.Repository
                 };
             }
 
-            // Создаем новую связь
             var newFridgeProduct = new FridgeProducts
             {
                 Id = Guid.NewGuid(),
@@ -99,7 +94,6 @@ namespace ServerFridge.Repository
             await _appDbContext.FridgeProducts.AddAsync(newFridgeProduct);
             await _appDbContext.SaveChangesAsync();
 
-            // Возвращаем созданный объект с ID
             return new FridgeProductsDTO
             {
                 Id = newFridgeProduct.Id,
@@ -117,7 +111,7 @@ namespace ServerFridge.Repository
                 return null;
             }
 
-            // Проверка на дубликат при изменении связей
+
             if (updateDto.FridgeId.HasValue || updateDto.ProductId.HasValue)
             {
                 var newFridgeId = updateDto.FridgeId ?? fridgeProduct.FridgeId;
@@ -135,7 +129,7 @@ namespace ServerFridge.Repository
                 }
             }
 
-            // Обновляем поля
+
             if (updateDto.Quantity.HasValue)
             {
                 fridgeProduct.Quantity = updateDto.Quantity.Value;
