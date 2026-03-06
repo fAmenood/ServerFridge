@@ -1,0 +1,38 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+using ServerFridge.Configurations;
+using ServerFridge.Models;
+using ServerFridge.Repository;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace ServerFridge.DataContext
+{
+    public class AppDbContext:DbContext
+    { 
+       public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+      protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new FridgeModelConfiguration());
+            modelBuilder.ApplyConfiguration(new FridgeConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductsConfiguration());
+            modelBuilder.ApplyConfiguration(new FridgeProductsConfiguration());
+
+            
+
+
+        }
+
+        public DbSet<Fridge> Fridges { get; set; }  
+        public DbSet<FridgeModel> FridgeModels { get; set; }
+        public DbSet<FridgeProducts> FridgeProducts { get; set; }
+        public DbSet<Products> Products { get; set; }
+        public DbSet<User> Users {  get; set; }
+
+
+
+
+
+    }
+}
